@@ -15,6 +15,7 @@ pub fn build(project: *std.Build) void {
             .root_source_file = project.path("src/main.zig"),
             .target = target,
             .optimize = optimize,
+            .single_threaded = true,
         }),
     });
 
