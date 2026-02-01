@@ -14,6 +14,10 @@ pub const LicenseTable = std.StaticStringMap(License).initComptime(.{
         .name = "Apache License, Version 2.0",
         .text = @embedFile("./license/APACHE-2.0.txt"),
     } },
+    .{ "bsd-0-clause", License{
+        .name = "BSD 0-Clause License",
+        .text = @embedFile("./license/BSD-0-CLAUSE.txt"),
+    } },
     .{ "bsd-2-clause", License{
         .name = "BSD 2-Clause \"Simplified\" License",
         .text = @embedFile("./license/BSD-2-CLAUSE.txt"),
@@ -29,6 +33,10 @@ pub const LicenseTable = std.StaticStringMap(License).initComptime(.{
     .{ "cc0-1.0", License{
         .name = "Creative Commons Zero v1.0 Universal",
         .text = @embedFile("./license/CC0-1.0.txt"),
+    } },
+    .{ "epl-2.0", License{
+        .name = "Eclipse Public License 2.0",
+        .text = @embedFile("./license/EPL-2.0.txt"),
     } },
     .{ "gpl-3.0", License{
         .name = "GNU General Public License v3.0",
@@ -49,5 +57,9 @@ pub const LicenseTable = std.StaticStringMap(License).initComptime(.{
     .{ "unlicense", License{
         .name = "The Unlicense",
         .text = @embedFile("./license/UNLICENSE.txt"),
+    } },
+    .{ "wtfpl", License{
+        .name = "Do What The F*ck You Want To Public License",
+        .text = @embedFile("./license/WTFPL.txt"),
     } },
 });
