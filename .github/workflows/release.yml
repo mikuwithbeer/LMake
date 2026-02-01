@@ -40,9 +40,9 @@ jobs:
           
           ASSET_NAME="LMake-${{ runner.os }}-${{ runner.arch }}"
           if [ "${{ runner.os }}" = "Windows" ]; then
-            zip -r ../$ASSET_NAME.zip .
+            7z a -tzip "../$ASSET_NAME.zip" .
           else
-            tar -czvf ../$ASSET_NAME.tar.gz .
+            tar -czvf "../$ASSET_NAME.tar.gz" .
           fi
 
       - name: Upload Artifact
@@ -62,6 +62,7 @@ jobs:
           merge-multiple: true
 
       - name: Generate Checksums
+        shell: bash
         working-directory: release_assets
         run: sha256sum * > SHA256SUMS.txt
 
