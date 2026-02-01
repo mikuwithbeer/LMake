@@ -12,7 +12,7 @@ jobs:
   build-and-upload:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    
+
     defaults:
       run:
         shell: bash
@@ -30,6 +30,7 @@ jobs:
           version: master
 
       - name: Build
+        if: matrix.os != 'windows-latest'
         run: zig build -Doptimize=ReleaseSafe
 
       - name: Package
