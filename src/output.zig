@@ -5,7 +5,6 @@ const BufferSize = 1024;
 pub const OutputError = error{
     WriteFailed,
     FileCreateFailed,
-    FormattingFailed,
 };
 
 pub const Output = struct {
@@ -29,15 +28,15 @@ pub const Output = struct {
     }
 
     pub fn writeFile(self: *Output, path: []const u8, content: []const u8) OutputError!void {
-        const file = std.Io.Dir.cwd().createFile(self.io, path, .{
-            .truncate = true,
-            .lock = .exclusive,
-        }) catch return OutputError.FileCreateFailed;
+        const file = std.Io.Dir.cwd().createFile(self.io, path, .{ .truncate = true }) catch {
+            return OutputError.FileCreateFailed;
+        };
         defer file.close(self.io);
 
         var file_writer = file.writer(self.io, &self.buffer);
         var file_interface = &file_writer.interface;
 
         file_interface.writeAll(content) catch return OutputError.WriteFailed;
+        file_interface.flush() catch return OutputError.WriteFailed;
     }
 };

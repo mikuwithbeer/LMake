@@ -22,6 +22,8 @@ pub fn main(init: std.process.Init) !void {
 
     const license_file: []const u8 = if (args.len == 3) args[2] else DefaultLicenseFile;
 
+    try output.writeStdout("{s}", .{LicenseTable.get(license_identifier).?.text});
+
     try handleLicenseWrite(license_identifier, license_file, &output);
     try output.writeStdout("license ({s}) written into file: {s}\n", .{ license_identifier, license_file });
 }
