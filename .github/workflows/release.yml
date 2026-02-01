@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    
+    defaults:
+      run:
+        shell: bash
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: mlugg/setup-zig@v2
+        with:
+          version: master
+
+      - name: Build
+        run: zig build -Doptimize=ReleaseSafe
+
+      - name: Package
+        run: |
+          mkdir -p dist
+          cp zig-out/bin/LMake* dist/
+          cd dist
+          
+          ASSET_NAME="LMake-${{ runner.os }}-${{ runner.arch }}"
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            zip -r ../$ASSET_NAME.zip .
+          else
+            tar -czvf ../$ASSET_NAME.tar.gz .
+          fi
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.os }}
+          path: LMake-*
+
+  create-release:
+    needs: build-and-upload
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: artifacts-*
+          path: release_assets
+          merge-multiple: true
+
+      - name: Generate Checksums
+        working-directory: release_assets
+        run: sha256sum * > SHA256SUMS.txt
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release_assets/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
