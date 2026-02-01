@@ -18,6 +18,8 @@ pub fn build(project: *std.Build) void {
         }),
     });
 
+    project.installArtifact(compile);
+
     const run_step = project.step("run", "Run the application");
     const run_command = project.addRunArtifact(compile);
     if (project.args) |args| {
