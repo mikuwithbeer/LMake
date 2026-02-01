@@ -42,6 +42,10 @@ pub const LicenseTable = std.StaticStringMap(License).initComptime(.{
         .name = "Eclipse Public License 2.0",
         .text = @embedFile("./license/EPL-2.0.txt"),
     } },
+    .{ "eulp-1.2", License{
+        .name = "European Union Public License 1.2",
+        .text = @embedFile("./license/EUPL-1.2.txt"),
+    } },
     .{ "gpl-3.0", License{
         .name = "GNU General Public License v3.0",
         .text = @embedFile("./license/GPL-3.0.txt"),
