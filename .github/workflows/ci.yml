@@ -23,6 +23,7 @@ jobs:
           version: master
 
       - name: Check Formatting
+        if: matrix.os != 'windows-latest'
         run: zig fmt --check .
 
       - name: Build

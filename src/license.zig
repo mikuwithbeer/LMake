@@ -16,11 +16,11 @@ pub const LicenseTable = std.StaticStringMap(License).initComptime(.{
     } },
     .{ "bsd-2-clause", License{
         .name = "BSD 2-Clause \"Simplified\" License",
-        .text = @embedFile("./license/BSD-2-Clause.txt"),
+        .text = @embedFile("./license/BSD-2-CLAUSE.txt"),
     } },
     .{ "bsd-3-clause", License{
         .name = "BSD 3-Clause \"New\" or \"Revised\" License",
-        .text = @embedFile("./license/BSD-3-Clause.txt"),
+        .text = @embedFile("./license/BSD-3-CLAUSE.txt"),
     } },
     .{ "bsl-1.0", License{
         .name = "Boost Software License, Version 1.0",

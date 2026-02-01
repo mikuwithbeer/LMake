@@ -30,7 +30,6 @@ jobs:
           version: master
 
       - name: Build
-        if: matrix.os != 'windows-latest'
         run: zig build -Doptimize=ReleaseSafe
 
       - name: Package
