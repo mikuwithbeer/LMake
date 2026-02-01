@@ -1,6 +1,6 @@
 .{
     .name = .LMake,
-    .version = "0.1.1",
+    .version = "0.1.2",
     .fingerprint = 0xc09b4419c9f2da94,
 
     .minimum_zig_version = "0.16.0-dev.2368+380ea6fb5",

@@ -10,6 +10,7 @@ pub fn main(init: std.process.Init) !void {
     const allocator = arena.allocator();
 
     var output = Output.init(init.io);
+    output.prepare();
 
     const args = try init.minimal.args.toSlice(allocator);
     try handleArgumentCount(args.len, &output);
@@ -20,15 +21,22 @@ pub fn main(init: std.process.Init) !void {
     const license_file: []const u8 = if (args.len == 3) args[2] else DefaultLicenseFile;
 
     try handleLicenseWrite(license_identifier, license_file, &output);
-    try output.writeStdout("license ({s}) written into file: {s}\n", .{ license_identifier, license_file });
+    try output.writeStdout(
+        \\successfully wrote license:
+        \\* file: {s}
+        \\* license: {s}
+        \\
+        \\keep in mind license templates may require additional information.
+        \\
+    , .{ license_file, license_identifier });
 }
 
 fn handleArgumentCount(length: usize, output: *Output) !void {
     if (length != 2 and length != 3) {
         try output.writeStderr(
             \\usage:
-            \\  {s} <license>
-            \\  {s} <license> [file]
+            \\* {s} <license>
+            \\* {s} <license> [file]
             \\
         , .{"LMake"} ** 2);
 
