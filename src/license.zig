@@ -66,6 +66,10 @@ pub const LicenseTable = std.StaticStringMap(License).initComptime(.{
         .name = "The Unlicense",
         .text = @embedFile("./license/UNLICENSE.txt"),
     } },
+    .{ "postgresql", License{
+        .name = "PostgreSQL License",
+        .text = @embedFile("./license/POSTGRESQL.txt"),
+    } },
     .{ "wtfpl", License{
         .name = "Do What The F*ck You Want To Public License",
         .text = @embedFile("./license/WTFPL.txt"),
