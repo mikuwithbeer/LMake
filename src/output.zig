@@ -16,12 +16,7 @@ pub const Output = struct {
         var stdout_writer = std.Io.File.stdout().writer(self.io, &self.buffer);
         var stdout_interface = &stdout_writer.interface;
 
-        var formatter_buffer: [BufferSize]u8 = undefined;
-        const formatted_content = std.fmt.bufPrint(&formatter_buffer, content, args) catch {
-            return OutputError.FormattingFailed;
-        };
-
-        stdout_interface.writeAll(formatted_content) catch return OutputError.WriteFailed;
+        stdout_interface.print(content, args) catch return OutputError.WriteFailed;
         stdout_interface.flush() catch return OutputError.WriteFailed;
     }
 
@@ -29,12 +24,7 @@ pub const Output = struct {
         var stderr_writer = std.Io.File.stderr().writer(self.io, &self.buffer);
         var stderr_interface = &stderr_writer.interface;
 
-        var formatter_buffer: [BufferSize]u8 = undefined;
-        const formatted_content = std.fmt.bufPrint(&formatter_buffer, content, args) catch {
-            return OutputError.FormattingFailed;
-        };
-
-        stderr_interface.writeAll(formatted_content) catch return OutputError.WriteFailed;
+        stderr_interface.print(content, args) catch return OutputError.WriteFailed;
         stderr_interface.flush() catch return OutputError.WriteFailed;
     }
 

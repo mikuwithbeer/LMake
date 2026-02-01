@@ -3,6 +3,8 @@ const std = @import("std");
 const LicenseTable = @import("license.zig").LicenseTable;
 const Output = @import("output.zig").Output;
 
+const DefaultLicenseFile = "LICENSE.txt";
+
 pub fn main(init: std.process.Init) !void {
     const arena = init.arena;
     const allocator = arena.allocator();
@@ -18,8 +20,10 @@ pub fn main(init: std.process.Init) !void {
     const license_identifier = args[1];
     try handleLicenseArgument(license_identifier, &output);
 
-    const license_file: []const u8 = if (args.len == 3) args[2] else "LICENSE.txt";
+    const license_file: []const u8 = if (args.len == 3) args[2] else DefaultLicenseFile;
+
     try handleLicenseWrite(license_identifier, license_file, &output);
+    try output.writeStdout("license '{s}' written into file: {s}\n", .{ license_identifier, license_file });
 }
 
 fn handleArgumentCount(length: usize, output: *Output) !void {
@@ -35,8 +39,8 @@ fn handleArgumentCount(length: usize, output: *Output) !void {
     }
 }
 
-fn handleLicenseArgument(license_identifier: []const u8, output: *Output) !void {
-    if (LicenseTable.get(license_identifier) == null) {
+fn handleLicenseArgument(identifier: []const u8, output: *Output) !void {
+    if (LicenseTable.get(identifier) == null) {
         try output.writeStderr("error: unknown license identifier, use following identifiers:\n\n", .{});
 
         // print available licenses
@@ -50,8 +54,11 @@ fn handleLicenseArgument(license_identifier: []const u8, output: *Output) !void 
     }
 }
 
-fn handleLicenseWrite(license_identifier: []const u8, license_file: []const u8, output: *Output) !void {
-    if (LicenseTable.get(license_identifier)) |license| {
-        try output.writeFile(license_file, license.text);
+fn handleLicenseWrite(identifier: []const u8, file: []const u8, output: *Output) !void {
+    if (LicenseTable.get(identifier)) |license| {
+        output.writeFile(file, license.text) catch {
+            try output.writeStderr("error: failed to write license to file: {s}\n", .{file});
+            std.process.exit(1);
+        };
     }
 }
