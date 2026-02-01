@@ -9,10 +9,7 @@ pub fn main(init: std.process.Init) !void {
     const arena = init.arena;
     const allocator = arena.allocator();
 
-    var output = Output{
-        .buffer = undefined,
-        .io = init.io,
-    };
+    var output = Output.init(init.io);
 
     const args = try init.minimal.args.toSlice(allocator);
     try handleArgumentCount(args.len, &output);
@@ -21,8 +18,6 @@ pub fn main(init: std.process.Init) !void {
     try handleLicenseArgument(license_identifier, &output);
 
     const license_file: []const u8 = if (args.len == 3) args[2] else DefaultLicenseFile;
-
-    try output.writeStdout("{s}", .{LicenseTable.get(license_identifier).?.text});
 
     try handleLicenseWrite(license_identifier, license_file, &output);
     try output.writeStdout("license ({s}) written into file: {s}\n", .{ license_identifier, license_file });
