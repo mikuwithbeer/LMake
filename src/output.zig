@@ -18,7 +18,7 @@ pub const Output = struct {
     stderr_interface: *std.Io.Writer,
 
     pub fn init(io: std.Io) Output {
-        var output = Output{
+        return Output{
             .io = io,
             .writer_buffer = undefined,
 
@@ -28,14 +28,14 @@ pub const Output = struct {
             .stderr_writer = undefined,
             .stderr_interface = undefined,
         };
+    }
 
-        output.stdout_writer = std.Io.File.stdout().writer(output.io, &output.writer_buffer);
-        output.stdout_interface = &output.stdout_writer.interface;
+    pub fn prepare(self: *Output) void {
+        self.stdout_writer = std.Io.File.stdout().writer(self.io, &self.writer_buffer);
+        self.stdout_interface = &self.stdout_writer.interface;
 
-        output.stderr_writer = std.Io.File.stderr().writer(output.io, &output.writer_buffer);
-        output.stderr_interface = &output.stderr_writer.interface;
-
-        return output;
+        self.stderr_writer = std.Io.File.stderr().writer(self.io, &self.writer_buffer);
+        self.stderr_interface = &self.stderr_writer.interface;
     }
 
     pub fn writeStdout(self: *Output, comptime content: []const u8, args: anytype) OutputError!void {
