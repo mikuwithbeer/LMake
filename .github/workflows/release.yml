@@ -61,11 +61,6 @@ jobs:
           path: release_assets
           merge-multiple: true
 
-      - name: Generate Checksums
-        shell: bash
-        working-directory: release_assets
-        run: sha256sum * > SHA256SUMS.txt
-
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
