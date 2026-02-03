@@ -1,69 +1,95 @@
 const std = @import("std");
 
-const LicenseTable = @import("license.zig").LicenseTable;
-const Output = @import("output.zig").Output;
+const config = @import("config.zig");
+const license = @import("license.zig");
+const output = @import("output.zig");
 
-const DefaultLicenseFile = "LICENSE.txt";
+const App = struct {
+    name: []const u8 = "LMake",
+    description: []const u8 = "Tiny and portable software license generator",
+    source: []const u8 = "https://github.com/mikuwithbeer/LMake",
+    version: []const u8 = "0.1.2",
+};
 
 pub fn main(init: std.process.Init) !void {
+    const application = App{};
+
     const arena = init.arena;
     const allocator = arena.allocator();
 
-    var output = Output.init(init.io);
-    output.prepare();
+    var writer = output.Output.init(init.io);
+    writer.prepare();
 
-    const args = try init.minimal.args.toSlice(allocator);
-    try handleArgumentCount(args.len, &output);
+    var configuration = config.Config.init(allocator);
+    configuration.parse(&init.minimal.args) catch |err| {
+        switch (err) {
+            config.ConfigError.ShowHelp => {
+                try writer.writeStdout(
+                    \\usage:
+                    \\* {s} <license>
+                    \\* {s} <license> -f [file]
+                    \\
+                    \\options:
+                    \\  -h, --help        Show this help message
+                    \\  -i, --info        Show application information
+                    \\  -l, --list        List available license identifiers
+                    \\  -s, --stdout      Write license to standard output
+                    \\  -f, --file FILE   Specify output file (default: {s})
+                    \\
+                , .{ application.name, application.name, configuration.file_name });
+                std.process.exit(0);
+            },
+            config.ConfigError.ShowInfo => {
+                try writer.writeStdout(
+                    \\{s}: {s}
+                    \\
+                    \\* version: {s}
+                    \\* source: {s}
+                    \\
+                , .{ application.name, application.description, application.source, application.version });
+                std.process.exit(0);
+            },
+            config.ConfigError.ListIdentifiers => {
+                try writer.writeStdout("available license identifiers:\n\n", .{});
 
-    const license_identifier = args[1];
-    try handleLicenseArgument(license_identifier, &output);
+                for (license.LicenseTable.keys()) |table_key| {
+                    if (license.LicenseTable.get(table_key)) |table_value| {
+                        try writer.writeStdout("* {s}: {s}\n", .{ table_key, table_value.name });
+                    }
+                }
 
-    const license_file: []const u8 = if (args.len == 3) args[2] else DefaultLicenseFile;
-
-    try handleLicenseWrite(license_identifier, license_file, &output);
-    try output.writeStdout(
-        \\successfully wrote license:
-        \\* file: {s}
-        \\* license: {s}
-        \\
-        \\keep in mind license templates may require additional information.
-        \\
-    , .{ license_file, license_identifier });
-}
-
-fn handleArgumentCount(length: usize, output: *Output) !void {
-    if (length != 2 and length != 3) {
-        try output.writeStderr(
-            \\usage:
-            \\* {s} <license>
-            \\* {s} <license> [file]
-            \\
-        , .{"LMake"} ** 2);
-
-        std.process.exit(1);
-    }
-}
-
-fn handleLicenseArgument(identifier: []const u8, output: *Output) !void {
-    if (LicenseTable.get(identifier) == null) {
-        try output.writeStderr("error: unknown license identifier, use following identifiers:\n\n", .{});
-
-        // print available licenses
-        for (LicenseTable.keys()) |table_key| {
-            if (LicenseTable.get(table_key)) |table_value| {
-                try output.writeStderr("* {s}: {s}\n", .{ table_key, table_value.name });
-            }
+                std.process.exit(0);
+            },
+            config.ConfigError.LicenseUnknown => {
+                try writer.writeStderr("error: unknown license identifier\n", .{});
+                std.process.exit(1);
+            },
+            config.ConfigError.LicenseUndefined => {
+                try writer.writeStderr("error: no license identifier provided\n", .{});
+                std.process.exit(1);
+            },
+            config.ConfigError.OutOfMemory => {
+                try writer.writeStderr("error: out of memory\n", .{});
+                std.process.exit(1);
+            },
+            config.ConfigError.TooManyArguments => {
+                try writer.writeStderr("error: too many arguments provided\n", .{});
+                std.process.exit(1);
+            },
         }
+    };
 
-        std.process.exit(1);
-    }
-}
-
-fn handleLicenseWrite(identifier: []const u8, file: []const u8, output: *Output) !void {
-    if (LicenseTable.get(identifier)) |license| {
-        output.writeFile(file, license.text) catch {
-            try output.writeStderr("error: failed to write license to file: {s}\n", .{file});
-            std.process.exit(1);
-        };
+    if (configuration.stdout) {
+        try writer.writeStdout("{s}", .{configuration.license.text});
+    } else {
+        try writer.writeFile(configuration.file_name, configuration.license.text);
+        try writer.writeStdout(
+            \\successfully wrote license:
+            \\* file: {s}
+            \\* license: {s}
+            \\
+            \\keep in mind license templates may require additional information.
+            \\
+        , .{ configuration.file_name, configuration.license_identifier.? });
     }
 }
