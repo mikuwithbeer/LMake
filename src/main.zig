@@ -8,7 +8,7 @@ const App = struct {
     name: []const u8 = "LMake",
     description: []const u8 = "Tiny and portable software license generator",
     source: []const u8 = "https://github.com/mikuwithbeer/LMake",
-    version: []const u8 = "0.1.2",
+    version: []const u8 = "0.2.0",
 };
 
 pub fn main(init: std.process.Init) !void {
@@ -41,12 +41,11 @@ pub fn main(init: std.process.Init) !void {
             },
             config.ConfigError.ShowInfo => {
                 try writer.writeStdout(
-                    \\{s}: {s}
-                    \\
+                    \\{s} - {s}
                     \\* version: {s}
                     \\* source: {s}
                     \\
-                , .{ application.name, application.description, application.source, application.version });
+                , .{ application.name, application.description, application.version, application.source });
                 std.process.exit(0);
             },
             config.ConfigError.ListIdentifiers => {

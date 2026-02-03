@@ -4,28 +4,27 @@ LMake is a high-performance CLI tool designed to instantly create project licens
 
 ---
 
-### Executable
+### Portable
 
 Compiles to a single, static binary. No external assets or networking required.
 
+You can download latest binary consulting [here](https://github.com/mikuwithbeer/LMake/releases/latest).
+
 ### Usage
 
-You can use the CLI to output specific licenses to a file:
+Run `LMake --help` or `LMake -h` to show help page:
 
-```bash
-LMake mit # defaults to LICENSE.txt
-```
+```txt
+usage:
+* LMake <license>
+* LMake <license> -f [file]
 
-You can also specify file:
-
-```bash
-LMake mit LICENSE.md # writes into LICENSE.md
-```
-
-It will list all available licenses for unknown identifier:
-
-```bash
-LMake help # "help" is unknown so it will list available identifiers :)
+options:
+  -h, --help        Show this help message
+  -i, --info        Show application information
+  -l, --list        List available license identifiers
+  -s, --stdout      Write license to standard output
+  -f, --file FILE   Specify output file (default: LICENSE.txt)
 ```
 
 ### License
