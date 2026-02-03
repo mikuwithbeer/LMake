@@ -50,6 +50,10 @@ pub const LicenseTable = std.StaticStringMap(License).initComptime(.{
         .name = "GNU General Public License v3.0",
         .text = @embedFile("./license/GPL-3.0.txt"),
     } },
+    .{ "isc", License{
+        .name = "ISC License",
+        .text = @embedFile("./license/ISC.txt"),
+    } },
     .{ "lgpl-3.0", License{
         .name = "GNU Lesser General Public License v3.0",
         .text = @embedFile("./license/LGPL-3.0.txt"),
@@ -73,5 +77,9 @@ pub const LicenseTable = std.StaticStringMap(License).initComptime(.{
     .{ "wtfpl", License{
         .name = "Do What The F*ck You Want To Public License",
         .text = @embedFile("./license/WTFPL.txt"),
+    } },
+    .{ "zlib", License{
+        .name = "zlib License",
+        .text = @embedFile("./license/ZLIB.txt"),
     } },
 });
