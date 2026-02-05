@@ -89,6 +89,6 @@ pub fn main(init: std.process.Init) !void {
             \\
             \\keep in mind license templates may require additional information.
             \\
-        , .{ configuration.file_name, configuration.license_identifier.? });
+        , .{ configuration.file_name, configuration.license.name });
     }
 }

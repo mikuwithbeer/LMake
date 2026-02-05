@@ -61,7 +61,10 @@ pub const Config = struct {
         }
 
         if (self.license_identifier) |license_identifier| {
-            if (license.LicenseTable.get(license_identifier)) |license_value| {
+            const lower_string = std.ascii.allocLowerString(self.allocator, license_identifier) catch return ConfigError.OutOfMemory;
+            defer self.allocator.free(lower_string);
+
+            if (license.LicenseTable.get(lower_string)) |license_value| {
                 self.license = license_value;
             } else {
                 return ConfigError.LicenseUnknown;
