@@ -8,7 +8,7 @@ const App = struct {
     name: []const u8 = "LMake",
     description: []const u8 = "Tiny and portable software license generator",
     source: []const u8 = "https://github.com/mikuwithbeer/LMake",
-    version: []const u8 = "0.2.0",
+    version: []const u8 = "0.2.1",
 };
 
 pub fn main(init: std.process.Init) !void {
