@@ -67,10 +67,6 @@ pub fn main(init: std.process.Init) !void {
                 try writer.writeStderr("Error: No license identifier provided\n", .{});
                 std.process.exit(1);
             },
-            config.ConfigError.OutOfMemory => {
-                try writer.writeStderr("Error: Out of memory\n", .{});
-                std.process.exit(1);
-            },
             config.ConfigError.TooManyArguments => {
                 try writer.writeStderr("Error: Too many arguments provided\n", .{});
                 std.process.exit(1);
@@ -83,9 +79,9 @@ pub fn main(init: std.process.Init) !void {
     } else {
         try writer.writeFile(configuration.file_name, configuration.license.text);
         try writer.writeStdout(
-            \\License {s} generated and saved to {s}.
-            \\Keep in mind that license templates might require additional information to include.
+            \\Successfully generated {s} and saved to {s}.
+            \\Note: Some license templates may require manual field updates.
             \\
-        , .{ configuration.file_name, configuration.license.name });
+        , .{ configuration.license.name, configuration.file_name });
     }
 }

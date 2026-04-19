@@ -8,7 +8,6 @@ pub const ConfigError = error{
     ListIdentifiers,
     LicenseUnknown,
     LicenseUndefined,
-    OutOfMemory,
     TooManyArguments,
 };
 
@@ -61,14 +60,14 @@ pub const Config = struct {
         }
 
         if (self.license_identifier) |license_identifier| {
-            const lower_string = std.ascii.allocLowerString(self.allocator, license_identifier) catch return ConfigError.OutOfMemory;
-            defer self.allocator.free(lower_string);
-
-            if (license.LicenseTable.get(lower_string)) |license_value| {
-                self.license = license_value;
-            } else {
-                return ConfigError.LicenseUnknown;
+            for (license.LicenseTable.keys()) |table_key| {
+                if (std.ascii.eqlIgnoreCase(license_identifier, table_key)) {
+                    self.license = license.LicenseTable.get(table_key) orelse unreachable;
+                    return;
+                }
             }
+
+            return ConfigError.LicenseUnknown;
         } else {
             return ConfigError.LicenseUndefined;
         }

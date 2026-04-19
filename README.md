@@ -15,11 +15,11 @@ You can download latest binary consulting [here](https://github.com/mikuwithbeer
 Run `LMake --help` or `LMake -h` to show help page:
 
 ```txt
-usage:
-* LMake <license>
-* LMake <license> -f [file]
+Usage:
+  LMake <license>
+  LMake <license> -f [file]
 
-options:
+Options:
   -h, --help        Show this help message
   -i, --info        Show application information
   -l, --list        List available license identifiers
