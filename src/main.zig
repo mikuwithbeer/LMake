@@ -8,7 +8,7 @@ const App = struct {
     name: []const u8 = "LMake",
     description: []const u8 = "Tiny and portable software license generator",
     source: []const u8 = "https://github.com/mikuwithbeer/LMake",
-    version: []const u8 = "0.2.1",
+    version: []const u8 = "0.3.0",
 };
 
 pub fn main(init: std.process.Init) !void {
@@ -49,7 +49,7 @@ pub fn main(init: std.process.Init) !void {
                 std.process.exit(0);
             },
             config.ConfigError.ListIdentifiers => {
-                try writer.writeStdout("available license identifiers:\n\n", .{});
+                try writer.writeStdout("Available license identifiers:\n\n", .{});
 
                 for (license.LicenseTable.keys()) |table_key| {
                     if (license.LicenseTable.get(table_key)) |table_value| {
@@ -60,19 +60,19 @@ pub fn main(init: std.process.Init) !void {
                 std.process.exit(0);
             },
             config.ConfigError.LicenseUnknown => {
-                try writer.writeStderr("error: unknown license identifier\n", .{});
+                try writer.writeStderr("Error: Unknown license identifier\n", .{});
                 std.process.exit(1);
             },
             config.ConfigError.LicenseUndefined => {
-                try writer.writeStderr("error: no license identifier provided\n", .{});
+                try writer.writeStderr("Error: No license identifier provided\n", .{});
                 std.process.exit(1);
             },
             config.ConfigError.OutOfMemory => {
-                try writer.writeStderr("error: out of memory\n", .{});
+                try writer.writeStderr("Error: Out of memory\n", .{});
                 std.process.exit(1);
             },
             config.ConfigError.TooManyArguments => {
-                try writer.writeStderr("error: too many arguments provided\n", .{});
+                try writer.writeStderr("Error: Too many arguments provided\n", .{});
                 std.process.exit(1);
             },
         }
