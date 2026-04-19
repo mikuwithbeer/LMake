@@ -66,6 +66,10 @@ pub const LicenseTable = std.StaticStringMap(License).initComptime(.{
         .name = "Mozilla Public License 2.0",
         .text = @embedFile("./license/MPL-2.0.txt"),
     } },
+    .{ "ms-pl", License{
+        .name = "Microsoft Public License",
+        .text = @embedFile("./license/MS-PL.txt"),
+    } },
     .{ "unlicense", License{
         .name = "The Unlicense",
         .text = @embedFile("./license/UNLICENSE.txt"),

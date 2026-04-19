@@ -25,11 +25,11 @@ pub fn main(init: std.process.Init) !void {
         switch (err) {
             config.ConfigError.ShowHelp => {
                 try writer.writeStdout(
-                    \\usage:
-                    \\* {s} <license>
-                    \\* {s} <license> -f [file]
+                    \\Usage:
+                    \\  {s} <license>
+                    \\  {s} <license> -f [file]
                     \\
-                    \\options:
+                    \\Options:
                     \\  -h, --help        Show this help message
                     \\  -i, --info        Show application information
                     \\  -l, --list        List available license identifiers
@@ -42,8 +42,8 @@ pub fn main(init: std.process.Init) !void {
             config.ConfigError.ShowInfo => {
                 try writer.writeStdout(
                     \\{s} - {s}
-                    \\* version: {s}
-                    \\* source: {s}
+                    \\  version: {s}
+                    \\  source: {s}
                     \\
                 , .{ application.name, application.description, application.version, application.source });
                 std.process.exit(0);
@@ -83,11 +83,8 @@ pub fn main(init: std.process.Init) !void {
     } else {
         try writer.writeFile(configuration.file_name, configuration.license.text);
         try writer.writeStdout(
-            \\successfully wrote license:
-            \\* file: {s}
-            \\* license: {s}
-            \\
-            \\keep in mind license templates may require additional information.
+            \\License {s} generated and saved to {s}.
+            \\Keep in mind that license templates might require additional information to include.
             \\
         , .{ configuration.file_name, configuration.license.name });
     }
