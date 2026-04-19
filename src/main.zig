@@ -67,6 +67,10 @@ pub fn main(init: std.process.Init) !void {
                 try writer.writeStderr("Error: No license identifier provided\n", .{});
                 std.process.exit(1);
             },
+            config.ConfigError.OutOfMemory => {
+                try writer.writeStderr("Error: Out of memory\n", .{});
+                std.process.exit(1);
+            },
             config.ConfigError.TooManyArguments => {
                 try writer.writeStderr("Error: Too many arguments provided\n", .{});
                 std.process.exit(1);

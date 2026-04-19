@@ -8,6 +8,7 @@ pub const ConfigError = error{
     ListIdentifiers,
     LicenseUnknown,
     LicenseUndefined,
+    OutOfMemory,
     TooManyArguments,
 };
 
@@ -33,7 +34,7 @@ pub const Config = struct {
     }
 
     pub fn parse(self: *Config, arguments: *const std.process.Args) ConfigError!void {
-        var iterator = try arguments.*.iterateAllocator(self.allocator);
+        var iterator = arguments.*.iterateAllocator(self.allocator) catch return ConfigError.OutOfMemory;
         _ = iterator.next(); // skip program name
 
         defer iterator.deinit();
